@@ -1,0 +1,87 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    height: 100%;
+}
+
+body{
+    height: 100%;
+    background-color: rgba(0, 0, 139, 0.4);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content{
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding-top: 10%;
+}
+
+.buttonsContainer{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 45%;
+}
+
+.buttonsContainer[data-connected = true]{
+    background-color: greenyellow;
+}
+
+.buttonsContainer[data-connected = false]{
+    background-color: tomato;
+}
+
+.textAreaContainer{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+}
+
+.textAreaContainer[data-port_open = false] .textAreaBlocker{
+    visibility: visible;
+}
+
+.textAreaContainer[data-port_open = true] .textAreaBlocker{
+    visibility: hidden;
+}
+
+.textAreaBlocker{
+    background-color: rgba(0, 0, 0, 0.859);
+    color: aliceblue;
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#inputField{
+    resize: none;
+    width: 50vw;
+    height: 20vh;
+
+    padding: 10px;
+}
+
+#outputField{
+    resize: none;
+    width: 50vw;
+    height: 20vh;
+
+    padding: 10px;
+}
