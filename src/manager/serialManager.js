@@ -1,7 +1,9 @@
-import { displayTextFields, enableConnectionButtons, getInputText, highlightConnection, writeOutputText } from "../view/mainView.js";
+import { disableCover, enableConnectionButtons, getBaudrate, getInputText, highlightConnection, setConnectionButtonAvailability, writeOutputText } from "../view/mainView.js";
 import { byteToHexString, hexStringToByte } from "./encodingManager.js";
 
 const Serial = navigator.serial;
+let curReader = null;
+let curWriter = null;
 let curPort = null;
 
 export function checkPortUpdateUI(){
@@ -13,28 +15,33 @@ export function checkPortUpdateUI(){
 export function checkConnection(){
     const connection = (curPort ? true: false);
     highlightConnection(connection);
+    setConnectionButtonAvailability(connection);
     return connection;
 }
 
-//returns port open status and updates text fields
+//returns port open status and updates cover on port
 export function checkPortOpening(){
     const open = (curPort&&curPort.readable ? true: false);
-    displayTextFields(open);
+    disableCover(open);
     return open;
 }
 
+//for handling connect and disconnect events
 export function initSerialSignals(){
-    Serial.addEventListener("connect", (event) => {
+    Serial.addEventListener("connect", (event) => connectionEvent(event));
+    navigator.serial.addEventListener("disconnect", (event) => disconnectEvent(event));
+}
+
+function connectionEvent(event){
     if (curPort && event.target === curPort) {
         checkPortUpdateUI();
     }
-    });
-    navigator.serial.addEventListener("disconnect", (event) => {
+}
+function disconnectEvent(event){
     if (curPort && event.target === curPort) {
         curPort = null; 
         checkPortUpdateUI();
     }
-    });
 }
 
 //gets the SerialPort object. returns true if successful
@@ -50,22 +57,20 @@ async function selectPort(){
     }
 }
 
-//drops the SerialPort object
+//drops the SerialPort object. Disconnect event manually called
 function deselectPort(){
     if(!curPort) return;
-    curPort = null;
-    checkPortUpdateUI();
+    disconnectEvent({target: curPort});
 }
 
 //open the communication channel
-async function openPort(baudRate = 9600) {
+async function openPort(bd) {
     if (!curPort) {
         console.error("No port selected");
         return;
     }
-    
     try {
-        await curPort.open({ baudRate });
+        await curPort.open({ baudRate: bd });
     } catch(e) {
         console.error("Failed to open port", e);
         deselectPort();
@@ -73,17 +78,16 @@ async function openPort(baudRate = 9600) {
 }
 
 //selects the port and opens it
-export async function connectToPort(baudRate = 9600){
+export async function connectToPort(){
     enableConnectionButtons(false);
 
     const successful = await selectPort();
     if(successful){
-        await openPort(baudRate);
+        const baudrate = getBaudrate();
+        await openPort(baudrate);
         checkPortUpdateUI();
         readFromPort(); //continues forever until port is closed
     }
-    
-    enableConnectionButtons(true);
 }
 
 //close the communication channel
@@ -94,20 +98,20 @@ async function closePort() {
     }
     
     try {
+        if(curReader)
+            await curReader.cancel();
         await curPort.close();
     } catch(e) {
         console.error("Failed to close port", e);
     }
 }
 
-
+//buttons are enabled
 export async function disconnectFromPort(){
     enableConnectionButtons(false);
 
     await closePort();
     deselectPort();
-
-    enableConnectionButtons(true);
 }
 
 //takes the input, encodes it and sends it to port
@@ -126,30 +130,30 @@ export async function writeToPort(){
     const byteBuff = hexStringToByte(inputBuff);
 
     //write into the stream
-    const writer = writeStream.getWriter();
+    curWriter = writeStream.getWriter();
     try{
-        await writer.write(byteBuff);
+        await curWriter.write(byteBuff);
     }
     catch(e){
         console.error("Could not send data to device", e);
     }
     finally{
-        writer.releaseLock();
+        curWriter.releaseLock();
+        curWriter = null;
     }
-
 }
 
 //constantly reads and writes it to field
 //currently writes byte by byte. Doesnt write everything all at once
 async function readFromPort(){
     const readStream = curPort.readable;
-    const reader = readStream.getReader();
+    curReader = readStream.getReader();
 
     const chunks = [];
     let byteCount = 0;
     while(true){
         try{
-            const {done, value} = await reader.read();
+            const {done, value} = await curReader.read();
 
             if(done)
                 break;
@@ -160,10 +164,11 @@ async function readFromPort(){
             writeOutputText(hexString);
         }
         catch(e){
-            console.error("data could not be received from port",e);
+            //console.error("data could not be received from port",e);
             break;
         }
         
     }
-    reader.releaseLock();
+    curReader.releaseLock();
+    curReader = null;
 }

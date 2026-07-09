@@ -130,6 +130,10 @@ body{
     background-color: rgb(0, 160, 0);
     color: greenyellow;
 }
+#connectBtn:disabled{
+    background-color: rgb(56, 56, 56);
+    color: rgb(164, 164, 164);
+}
 #disconnectBtn{
     background-color: maroon;
     color: darkorange;
@@ -141,6 +145,10 @@ body{
 #disconnectBtn:active{
     background-color: rgb(184, 0, 0);
     color: darkorange;
+}
+#disconnectBtn:disabled{
+    background-color: rgb(56, 56, 56);
+    color: rgb(164, 164, 164);
 }
 
 .connection-signifier-container{
@@ -258,6 +266,10 @@ body{
     font-size: larger;
     height: 10%;
     border-radius: 5%;
+}
+#dataSendBtn:active{
+    background-color: grey;
+    color: antiquewhite;
 }
 
 .automatic-command-container{
