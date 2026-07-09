@@ -18,70 +18,254 @@ body{
 }
 
 .content{
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    padding-top: 10%;
-}
-
-.buttonsContainer{
-    margin: 10px;
-    padding: 10px;
-    border-radius: 45%;
-}
-
-.buttonsContainer[data-connected = true]{
-    background-color: greenyellow;
-}
-
-.buttonsContainer[data-connected = false]{
-    background-color: tomato;
-}
-
-.textAreaContainer{
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 2vh;
+
+    height: 100%;
+    width: 100%;
+
+    padding-top: 0%;
 }
 
-.textAreaContainer[data-port_open = false] .textAreaBlocker{
+/* Configurations */
+
+.configuration-container{
+    flex-grow: 0.1;
+    display: flex;
+
+    width: 100%;
+
+    padding-left: 5%;
+    padding-right: 5%;
+    gap: 2%;
+}
+.configuration-container > *{
+    border-right: 5px double DarkSlateGray;
+}
+
+.mode-selection-container{
+    flex-grow: 1;
+    display: flex;
+    padding-right: 2%;
+}
+.mode-selection-container > *{
+    height: 100%;
+    flex-grow: 1;
+    font-size: large;
+    line-height: 0;
+    border-radius: 5%;
+    border-bottom: 0;
+}
+
+#manual-mode-button{
+    background-color: cadetblue;
+}
+#manual-mode-button:hover{
+    background-color: rgb(75, 122, 123);
+}
+#manual-mode-button:active{
+    background-color: rgb(120, 193, 194);
+}
+#automatic-mode-button{
+    background-color: tomato;
+}
+#automatic-mode-button:hover{
+    background-color: rgb(194, 75, 54);
+}
+#automatic-mode-button:active{
+    background-color: rgb(255, 130, 108);
+}
+
+/**/
+
+.connection-settings-container{
+    flex-grow: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.connection-settings-container > div{
+    height: 75%;
+}
+
+.baud-rate-container{   
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+}
+
+.connection-settings-right-side-container{
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px
+}
+
+.connection-buttons-container{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.connection-buttons-container > button{
+    height: 75%;
+    font-size: large;
+    line-height: 0;
+    border-radius: 5%;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+#connectBtn{
+    background-color: darkgreen;
+    color: greenyellow;
+}
+#connectBtn:hover{
+    background-color: rgb(0, 57, 0);
+    color: greenyellow;
+}
+#connectBtn:active{
+    background-color: rgb(0, 160, 0);
+    color: greenyellow;
+}
+#disconnectBtn{
+    background-color: maroon;
+    color: darkorange;
+}
+#disconnectBtn:hover{
+    background-color: rgb(79, 0, 0);
+    color: darkorange;
+}
+#disconnectBtn:active{
+    background-color: rgb(184, 0, 0);
+    color: darkorange;
+}
+
+.connection-signifier-container{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+
+    flex-basis: 12vw; 
+    flex-shrink: 0;
+}
+
+#connection-light-span{
+    height: 2vh;
+    width: 2vh;
+    border-radius: 50%;
+    background-color: red;
+    flex-shrink: 0;
+
+    box-shadow:
+    0 0 8px 2px red;
+}
+
+.connection-settings-container[data-connected="false"] #connection-light-span{
+    background-color: red;
+    box-shadow:
+    0 0 8px 2px red;
+}
+.connection-settings-container[data-connected="true"] #connection-light-span{
+    background-color: springgreen;
+    box-shadow:
+    0 0 8px 2px springgreen;
+}
+
+#connection-text-span{
     visibility: visible;
 }
 
-.textAreaContainer[data-port_open = true] .textAreaBlocker{
-    visibility: hidden;
+/* Main Content */
+
+.main-content-container{
+    position: relative;
+    flex-grow: 1;
 }
 
-.textAreaBlocker{
-    background-color: rgba(0, 0, 0, 0.859);
-    color: aliceblue;
-    position: absolute;
+.main-content-container[data-open_window = "2"] .manual-command-container{
+    display: none;
+}
+.main-content-container[data-open_window = "1"] .automatic-command-container{
+    display: none;
+}
 
-    width: 100%;
+.main-cover-container{
+    position: absolute;
     height: 100%;
+    width: 100%;
     z-index: 10;
 
+    pointer-events: none;
+}
+.main-cover-container[data-port_open="true"] .main-cover{
+    visibility: hidden;
+}
+.main-cover-container[data-port_open="false"] .main-cover{
+    visibility: visible;
+}
+
+.main-cover{
+    background-color: rgba(0, 0, 0, 0.859);
+    color: aliceblue;
+    position: relative;
+
+    height: 100%;
+    width: 100%;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    pointer-events: all;
+}
+
+
+.manual-command-container{
+    background-color: cadetblue;
+    padding: 3%;
+    
+    position: relative;
+    height: 100%;
+
+    display: flex;
+}
+
+.manual-text-fields-container{
+    display: grid;
+    grid-template-rows: 1fr 5fr 5fr 2fr;
+    grid-gap: 2%;
+
+    flex-grow: 1;
+}
+
+#inputField,#outputField{
+    height: 100%;
+    resize: none;
+}
+
+.manual-button-container{
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#inputField{
-    resize: none;
-    width: 50vw;
-    height: 20vh;
-
-    padding: 10px;
+#dataSendBtn{
+    font-size: larger;
+    height: 10%;
+    border-radius: 5%;
 }
 
-#outputField{
-    resize: none;
-    width: 50vw;
-    height: 20vh;
+.automatic-command-container{
+    background-color: tomato;
+    padding: 3%;
+    
+    position: relative;
+    height: 100%;
 
-    padding: 10px;
+    display: flex;
 }

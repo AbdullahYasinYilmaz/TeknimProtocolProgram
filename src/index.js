@@ -5,7 +5,7 @@ const disconnectBtn = document.getElementById("disconnectBtn");
 const btnContainer = document.querySelector(".buttonsContainer");
 const sendDataBtn = document.getElementById("dataSendBtn");
 
-initProgram();
+//initProgram();
 
 function initProgram(){
     checkPortUpdateUI();

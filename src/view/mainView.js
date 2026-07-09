@@ -21,7 +21,7 @@ export function displayTextFields(bool){
 
 export function getInputText(){
     const buff = inputTextArea.value;
-    inputTextArea.value = "";
+    //inputTextArea.value = "";
     return buff;
 }
 
@@ -31,5 +31,6 @@ export function enableInputTextArea(bool){
 }
 
 export function writeOutputText(str){
+    outputTextArea.value = "";
     outputTextArea.value += str;
 }
