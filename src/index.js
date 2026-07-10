@@ -1,4 +1,4 @@
-import {writeToPort, connectToPort, disconnectFromPort, checkPortUpdateUI, initSerialSignals } from "./manager/serialManager.js";
+import {writeToPort, connectToPort, disconnectFromPort, checkPortUpdateUI, initHardwareSignals } from "./manager/serialManager.js";
 import { enableCustomBaudInput, toWindow } from "./view/mainView.js";
 
 const baudSelection = document.getElementById("baud-rate-selection");
@@ -15,7 +15,7 @@ initProgram();
 
 function initProgram(){
     checkPortUpdateUI();
-    initSerialSignals();
+    initHardwareSignals();
     initButtons();
 }
 

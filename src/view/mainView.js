@@ -20,15 +20,21 @@ export function enableCustomBaudInput(){
     }
 }
 
+export function disableBaudrateInput(bool){
+    baudSelection.disabled = bool;
+    baudCustomInput.disabled = bool;
+}
+
 export function getBaudrate(){
     let baudRate = parseInt(baudCustomInput.value);
     
     if(baudCustomInput.disabled == false && Number.isInteger(baudRate)){
         console.log(baudRate);
-        return Number(baudRate);
+        baudRate = Number(baudRate);
     }
-    else
+    else if(Number.isInteger(baudSelection.value))
         baudRate = baudSelection.value;
+    else baudRate = 9600;
 
     return baudRate;
 }
@@ -71,4 +77,9 @@ export function enableInputTextArea(bool){
 export function writeOutputText(str){
     outputTextArea.value = "";
     outputTextArea.value += str;
+}
+
+const manDataSendBtn = document.getElementById("dataSendBtn");
+export function enableManDataSendBtn(bool){
+    manDataSendBtn.disabled = !bool;
 }
