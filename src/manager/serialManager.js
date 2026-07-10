@@ -53,7 +53,7 @@ async function openPort(bd) {
     }
 }
 
-//closes the port, deselects it and updates UI
+//portu kapatır, seçimi kaldırır ve arayüzü günceller
 export async function disconnectFromPort(){
     enableConnectionButtons(false);
 
@@ -75,9 +75,9 @@ async function closePort() {
 
     isClosing = true;
     try {
-        if(curReader){ //need reader to finish before we close the port
+        if(curReader){ 
             await curReader.cancel();
-            await readingPromise;
+            await readingPromise; //portu kapatmadan önce okuyucunun işini bitirmesi beklenir
         }
         await curPort.close();
     } catch(e) {
@@ -124,6 +124,7 @@ export async function writeToPort(){
     }
 
     const writeStream = curPort.writable;
+    curWriter = writeStream.getWriter();
 
     //take input from text field. Can be empty
     const inputBuff = getInputText();
@@ -131,8 +132,6 @@ export async function writeToPort(){
     //encode the string to bytes
     const byteBuff = hexStringToByte(inputBuff);
 
-    //write into the stream
-    curWriter = writeStream.getWriter();
     try{
         await curWriter.write(byteBuff);
     }

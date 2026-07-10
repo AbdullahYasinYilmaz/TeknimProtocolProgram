@@ -1,1 +1,1 @@
-Simple web program to communicate with serial COM ports using Teknim Protocol
+Web program to communicate with serial COM ports using Teknim Protocol
